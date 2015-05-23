@@ -1,8 +1,5 @@
 #' Function for getting access statistics for wikipedia pages
 #' 
-#' @param requestFrom This parameter sends an identifier (i.e. your email 
-#'   address to contact you if necessary) to stats.grok.se (the server that 
-#'   kindly provides the information you request).
 #'   
 #' @param page The name of the Wikipedia page as to be found in the URL to the 
 #'   wikipedia article. If e.g. the URL is: 
@@ -26,109 +23,117 @@
 #'   character. If the option is of type character it should be in the form of 
 #'   yyyy-mm-dd.
 #'   
-#' @param friendly Either \code{TRUE}, \code{FALSE}, \code{1} or \code{2} This 
-#'   option causes twofold. First, if the value is set to TRUE, 1, or 2 the 
-#'   results of the request are saved in the current working directory in a CSV 
-#'   file with name scheme: \code{wp__[page name]_[country code].csv}. Second, 
-#'   the function will look if perhaps a previously saved result is available to
-#'   be used to only download those information that are still missing instead 
-#'   of the whole timespan.
+#' @param file Where to cache/store the retrieved data? By default a file within 
+#'   the user folder is used for as long as the R session takes place. The data 
+#'   is stored in CSV format. If an already existing file is used for storage, 
+#'   the old data will not be deleted but instead new data will be added to this 
+#'   file. 
 #'   
-#'   For storage on disk \code{write.csv()} (friendly=TRUE or friendly=1) and 
-#'   \code{write.csv2()} (friendly=2) are used.
+#'   path to your current cache file:\cr
+#'   \code{wp_cache_file()}\cr
+#'   \code{dirname(wp_cache_file())}
 #'   
-#' @param userAgent Whether or not to send the following information along your
-#'   requests: \code{paste( "wikipediatrend running on: ", R.version$platform,
-#'   R.version$version.string, sep=", ")}
-#'   
+#'
+#'   browse to the folder containing you current cache file:\cr
+#'   \code{browseURL(wp_cache_file())}
+#'
+#' @param friendly deprecated
+#' @param requestFrom deprecated
+#' @param userAgent deprecated
+#'
 #' @examples 
-#' wp_trend(page        = "Main_Page", 
+#' library(wikipediatrend)
+#' wp_trend(page        = c("Cheese", "K\u00e4se"),
 #'          from        = "2014-11-01", 
 #'          to          = "2014-11-30", 
-#'          lang        = "en", 
-#'          friendly    = FALSE, 
-#'          requestFrom = "wp.trend.tester at wptt.wptt",
-#'          userAgent   =   TRUE)
+#'          lang        = c("en", "de"),
+#'          file        = wp_cache_file()
+#'          )
+#'          
+#' @export
 
-wp_trend <- function( page        = "Peter_principle", 
-                      from        = Sys.Date()-30, 
-                      to          = Sys.Date(),
+wp_trend <- function( page , 
+                      from        = prev_month_start(), 
+                      to          = prev_month_end(),
                       lang        = "en", 
-                      friendly    = F,
-                      requestFrom = "anonymous",
-                      userAgent   = F
+                      file        = wp_cache_file(), 
+                      friendly,
+                      requestFrom,
+                      userAgent
 ){
-  # encourage being freindly
-  if ( !friendly ) {
-    message("
-    With option 'friendly' set to FALSE subsequent requests 
-    of the same wikipedia-entry cause the server -- which is kindly 
-    providing information for you -- to work hard to get the same 
-    stuff over and over and over and over again. Do not bore 
-    the server - be friendly. 
-    
-    See: '?wp_trend'
-    ")
-  }
-  if ( !userAgent ) {
-    standardHeader <- list( from         = requestFrom)
-  }else{
-    standardHeader <- list( from         = requestFrom,
-                            'user-agent' = paste( "wikipediatrend running on: ", 
-                                                  R.version$platform,
-                                                  R.version$version.string,
-                                                  sep=", "))
-  }
+  # dev # 
+  # page="main"; from=Sys.Date()-30; to=Sys.Date(); lang="en"; file=wp_cache_file()
   
-  # file name for beeing friendly
-  resname <- paste0("wp", "__", page, "__", lang, ".csv")
+  # deprecation
+  if( !missing("requestFrom") ) 
+    message("Option 'requestFrom' is deprecated and will cause errors 
+            in futuere versions of the wp_trend() function. Please read 
+            the package vignette and/or README to learn about the new
+            set of options.
+            
+            Check wp_http_header() to know which information are send to 
+            stats.grok.se (R and package versions)
+            ")
+  if( !missing("friendly") ) 
+    message("Option 'friendly' is deprecated and will cause errors 
+            in futuere versions of the wp_trend() function. Please read 
+            the package vignette and/or README to learn about the new
+            set of options.
+            
+            The package now is friendly by default.
+            ")
+  if( !missing("userAgent") ) 
+    message("Option 'userAgent' is deprecated and will cause errors 
+            in futuere versions of the wp_trend() function. Please read 
+            the package vignette and/or README to learn about the new
+            set of options.
+            
+            Check wp_http_header() to know which information are send to 
+            stats.grok.se (R and package versions)
+            ")
+  
+  # input check
+  stopifnot( length(page)==length(lang) | length(lang)==1 )
   
   # check dates
-  tmp  <- wp_check_date_inputs(from, to)
-  from <- tmp$from
-  to   <- tmp$to
+  from <- wp_check_date_inputs(from, to)$from
+  to   <- wp_check_date_inputs(from, to)$to
   
-  # beeing friendly
-  friendly_data <- wp_friendly_load(resname, friendly)
-  
-  # checking for months with missing data
-  dates_day <- wp_expand_ts(from, to, "day")
-  not_in_fd <- !(dates_day %in% friendly_data$date)
-  dates_url <- unique(wp_yearmonth(dates_day[ not_in_fd ]))
-  
-  # prepare urls
-  urls  <- paste( "http://stats.grok.se/json",
-                  lang, dates_url, page, sep="/")
-  if(all(dates_url=="")) urls  <- NULL
-  
-  # chunking urls
-  urlchunks <- chunk(urls, 5)
-  
-  # make http requests
-  jsons <- list()
-  for(i in seq_along(urlchunks)){
-    jsons <- c(
-      jsons, 
-      RCurl::getURL(url = urlchunks[[i]], httpheader = standardHeader)
-     )
-    message(paste(urlchunks[[i]], collapse="\n"))
-    Sys.sleep(1)
+  # check page
+  page <- stringr::str_replace( page, "^.", substring(toupper(page),1,1) )
+  page <- stringr::str_replace( page, " ", "_" )
+  for( i in seq_along(page) ){
+    if ( !stringr::str_detect( page[i], "%" ) ){
+      page[i] <- URLencode(page[i])
+    }
   }
-  
-  # extract data
-  res <- wp_extract_data(jsons)
-  
-  # combine new data and old data
-  not_in_res <- !(friendly_data$date %in% res$date)
-  res <- rbind(res, friendly_data[not_in_res,])
-  res <- res[order(res$date), ]
-  
-  # beeing friendly: saving results to file for possible later use
-  wp_friendly_save(res, friendly, resname)
 
+  # setting cache-file (if necessary)
+  if ( file != wp_cache_file() ){
+    wp_set_cache_file(file)
+  }
+    
+  # prepare URLs
+  urls <- wp_prepare_urls(page=page, 
+                          from=from, 
+                          to=to, 
+                          lang=lang)
+
+  # download data and extract data
+  trash <- wp_get_data(urls)
+  
+  # save cache to file and load cache for returning results 
+  res <- wp_get_cache()
+  
   # return
-  res <- res[ res$date <= to & res$date >= from ,]
+  res <- 
+    res[  res$date <= to & 
+          res$date >= from &
+          paste( res$lang, toupper(res$page))  %in% paste( lang, toupper(page) ) 
+          , 
+        ]
   rownames(res) <- NULL
+  class(res) <- c("wp_df", "data.frame")
   return(res)
 }
 

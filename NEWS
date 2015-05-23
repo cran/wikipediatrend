@@ -1,0 +1,66 @@
+NEWS wikipediatrend 
+==========================================================================
+
+version 1.1.0 // 2015-05-21 ...
+--------------------------------------------------------------------------
+
+- feature: caching has been overhauled 
+
+- feature: wp_trend() now tries to guess if page was supplied as title with possible special characters or as (url-encoded) URL part and take care of  further processing
+
+- bug-fix: special character support of the packages was lousy and preventing 
+the usage of articles of non-standard languages ( - especially on Windows)
+  * introduction of the wp_df class to allow for a print.wp_df that 
+    a) shortens long strings on print
+    b) does not use format() (format() causes UTF-8 characters to be replaced 
+       by "<U+xxxx>" strings (propably only))
+  * using a package specific write_utf8_csv() and read_utf8_csv() to be able to
+    store and cache data for articles with special character names 
+    (even under Windows, write.csv() does not allow enforcing a specific 
+    encoding)
+
+- bug-fix / backward compatibility: with version 1.0.0 old parameters for 
+wp_trend() were causing errors
+
+- bug-fix: wp_cache_reset() would stop with an error if called twice in a row - fixed
+
+version 1.0.0 // 2015-04-01 ...
+--------------------------------------------------------------------------
+
+- api-change: option userAgent deleted: the default is to send information on 
+versions of R, wikipediatrend, curl as well as RCurl
+
+- api-change: option requestFrom deleted: the default is to not send the header
+
+- feature: wp_trend() now by default caches data retrievals in a temporary file
+
+- feature: wp_trend(file="save.csv") now allows to specify a file where 
+retrievals are stored (this will always add to the already existing data)
+
+- feature: wp_trend() now allows to specify more than one page and/or language 
+at a time. data than will be retrieved for every combination of 
+page-language and date 
+
+- feature: caching system is persistant wp_cache_file() will report file used for 
+caching; wp_cache_reset() will reset cache; wp_cache_load() will return its 
+content as data.frame()
+
+- feature: while wp_trend() now (invisibly) returns only data from the current 
+request at hand the new function wp_cache() will retrieve data from cache files 
+(by default / if no file name is specified it retrieves data from .wp_trend_cache) 
+
+- api-change: the data returned by wp_trend(), cached in cache-file, retrieved by 
+wp_cache() does consist of more variables: date, count, project, title,
+rank, month
+
+- feature: testthat tests now check base functionality of the package
+
+- bug-fix: non-existing page views for a month have led to an error, fixed.
+
+- bug-fix: wp_trend() now checks date inputs better for logical inconsistencies 
+
+
+version 0.2.0 // 2014-11-01 ... 
+--------------------------------------------------------------------------
+
+- first puplication on CRAN

@@ -1,7 +1,7 @@
-7e30d809be779763bc063cb85522eb8a *DESCRIPTION
+cb8fc2d2d55c938badcc2e59bb4a3bb0 *DESCRIPTION
 c296955d3be40200036b2119ee1a97a8 *NAMESPACE
-f807d2007bf7e59639bab477c027def8 *NEWS
-2f24c4cb95d56969b2afc099b4829d35 *R/aa_pversion_inc.r
+213244b82b8562f646b0a35dd7967de8 *NEWS
+35d0440cb56b0440eb282d01615dad24 *R/aa_pversion_inc.r
 bfde314d8a862d8bd285524868b99511 *R/wp_cache.R
 379800fd258f68d976cc4d49bdf53127 *R/wp_check_date_inputs.R
 238bf4f5a070bebdca6739e4203dd60b *R/wp_date_functions.r
@@ -17,11 +17,11 @@ e523cc2a8c8f897774db9295ffdab9ba *R/wp_download_data.R
 7c9d22a679d209e6d97afa9be152cd8b *R/wp_prepare_urls.R
 003e86b918782733d462d5dc16a2fca7 *R/wp_trend.R
 fc15c94d58361c82dec0671f8866b91b *R/zzz.R
-fe4a522b667943d174c324fd213de121 *README.md
+fce741c1b20603237b708c66c628ba80 *README.md
 bb2a342d17415b616dd6ec63c195c841 *build/vignette.rds
-a8c540dd761c8b84fc1ce3c456d269e1 *inst/doc/using-wikipediatrend.R
-f5983547a9bd6e01c7049b4241574324 *inst/doc/using-wikipediatrend.Rmd
-3339fc46bec930c80af91e8301067c19 *inst/doc/using-wikipediatrend.html
+3abc0ba3127273ec161b1d0784f937f3 *inst/doc/using-wikipediatrend.R
+f29ccf5d57005b330df09d2d69071192 *inst/doc/using-wikipediatrend.Rmd
+802869694663f28cf05a3aa67e1e68a9 *inst/doc/using-wikipediatrend.html
 2f22ee54bf2fdb97c3234d3ef3d4d839 *inst/extdata/wikipediatrend_cache.csv
 fa8952d400701fe1bd26be9efeded145 *man/prev_month_end.Rd
 fbbb0e6dbfe65d5fe7f70d7a12ac3009 *man/prev_month_start.Rd
@@ -30,7 +30,7 @@ fbbb0e6dbfe65d5fe7f70d7a12ac3009 *man/prev_month_start.Rd
 40e1588d9c732a41f4cdd51be5295e19 *man/read_utf8_csv.Rd
 2da8ae43190cfd095161f5ef305d517e *man/toUTF8.Rd
 67dd0668db672dc5e427724a5160e7fe *man/wp_add_to_cache.Rd
-53bf18de4945eb35de48d151a409c5fe *man/wp_cache.Rd
+86095c135855e6e56385f1dac7586eb5 *man/wp_cache.Rd
 3e0205d9bee96737d7778ebc950e6712 *man/wp_cache_default.Rd
 e80d73a01c924c2be9f27cdac9b509d7 *man/wp_cache_file.Rd
 8fe9ba4084c0f0636b0f4875e8a452ba *man/wp_cache_load.Rd
@@ -63,4 +63,4 @@ de547d34f2448acc379ad9ea6cda1e0c *tests/testthat/test.csv
 4ce7445b19d2e90e5b2d99944782338a *tests/testthat/test_caching_gathering.R
 6121472930b8f986acce22e7facc7178 *tests/testthat/test_data_gathering.R
 4bff29d6ae8510f430adb7b87a1427e2 *tests/testthat/test_date_functions.R
-f5983547a9bd6e01c7049b4241574324 *vignettes/using-wikipediatrend.Rmd
+f29ccf5d57005b330df09d2d69071192 *vignettes/using-wikipediatrend.Rmd

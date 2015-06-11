@@ -8,23 +8,54 @@ Peter Meißner
 
 # Last Update
 
-2015-05-22
+2015-06-09
 
 
 
 # Status
 
-[<img src="https://api.travis-ci.org/petermeissner/wikipediatrend.svg?branch=master">
-](https://travis-ci.org/petermeissner/wikipediatrend)
- <br> 
-[<img src="https://coveralls.io/repos/petermeissner/wikipediatrend/badge.svg" >
-](https://coveralls.io/r/petermeissner/wikipediatrend)
- <br> 
-[<img src="http://cranlogs.r-pkg.org/badges/grand-total/wikipediatrend">
-](http://cranlogs.r-pkg.org/)
-[<img src="http://cranlogs.r-pkg.org/badges/wikipediatrend">
-](http://cranlogs.r-pkg.org/)
-
+<table>
+<tr>
+<td> 
+Ubuntu build </td>
+<td> 
+<img src="https://api.travis-ci.org/petermeissner/wikipediatrend.svg?branch=master">
+</td>
+</tr>
+<tr>
+<td> 
+Windows build
+</td>
+<td> 
+<img src="http://ci.appveyor.com/api/projects/status/github/petermeissner/wikipediatrend">
+</td>
+</tr>
+<tr>
+<td> 
+Code covered by tests
+</td>
+<td> 
+<img src="https://coveralls.io/repos/petermeissner/wikipediatrend/badge.svg">
+</td>
+</tr>
+<tr>
+<td>
+Version on CRAN  
+</td> 
+<td>
+<img src="http://www.r-pkg.org/badges/version/wikipediatrend">
+</td>
+</tr>
+<tr>
+<td>
+Downloads from <a href='http://cran.rstudio.com/'>CRAN.RStudio</a>
+</td>
+<td>
+<img src="http://cranlogs.r-pkg.org/badges/grand-total/wikipediatrend">
+<img src="http://cranlogs.r-pkg.org/badges/wikipediatrend">
+</td>
+</tr>
+</table>
 
 
 

@@ -8,9 +8,9 @@
 #'   
 #' @param lang The language shorthand identifying which Wikipedia access 
 #'   statistics are to be used: e.g. \code{"en"} for the English version found 
-#'   at http://en.wikipedia.org, \code{"de"} for the German version found at 
-#'   http://de.wikipedia.org or perhaps \code{"als"} for the Alemannic dialect 
-#'   found under http://als.wikipedia.org/.
+#'   at https://en.wikipedia.org, \code{"de"} for the German version found at 
+#'   https://de.wikipedia.org or perhaps \code{"als"} for the Alemannic dialect 
+#'   found under https://als.wikipedia.org/.
 #'   
 #' @param from The starting date of the timespan for which access statistics 
 #'   should be retrieved - note that there is no data prior to 2007-12-01. 
@@ -59,7 +59,7 @@ wp_trend <- function( page ,
   # dev # 
   # page="main"; from=prev_month_start(); to=prev_month_end(); lang="en"; file=""
   # page="main"; from=prev_month_start(); to=prev_month_end(); lang="en"; file="test.csv"
-  
+  # page="pegida"; from=prev_month_start(); to=Sys.Date(); lang="de"; file=""
   # deprecation
   if( !missing("requestFrom") ) 
     message("Option 'requestFrom' is deprecated and will cause errors 
@@ -92,6 +92,7 @@ wp_trend <- function( page ,
                           
   # input check
   stopifnot( length(page)==length(lang) | length(lang)==1 )
+  stopifnot( all( !is.na(page) ), all( !is.na(lang) ) )
   
   # check dates
   from <- wp_check_date_inputs(from, to)$from
@@ -102,7 +103,7 @@ wp_trend <- function( page ,
   page <- stringr::str_replace( page, " ", "_" )
   for( i in seq_along(page) ){
     if ( !stringr::str_detect( page[i], "%" ) ){
-      page[i] <- URLencode(page[i])
+      page[i] <- utils::URLencode(page[i])
     }
   }
 

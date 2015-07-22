@@ -17,7 +17,7 @@ wp_linked_pages <- function(page, lang){
     substring(toupper(page),1,1) 
   )
   # url 
-  url <- paste0("http://", lang, ".wikipedia.org/wiki/", page)
+  url <- paste0("https://", lang, ".wikipedia.org/wiki/", page)
   # getting language links
   html_doc   <- rvest::html( url, httr::user_agent(wp_http_header()$`user-agent`) )
   lang_nodes <- rvest::html_nodes( html_doc, "[hreflang]")  
@@ -34,7 +34,7 @@ wp_linked_pages <- function(page, lang){
           "wiki/", "")
   lang_df[lang_df$lang=="x-default",] <- c(page, lang)
   # add decoded title 
-  tmp <- unlist(lapply(lang_df$page, URLdecode))
+  tmp <- unlist(lapply(lang_df$page, utils::URLdecode))
   Encoding(tmp) <- "UTF-8"
   lang_df$title <- tmp
   # return

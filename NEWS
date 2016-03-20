@@ -1,6 +1,37 @@
 NEWS wikipediatrend 
 ==========================================================================
 
+version 1.1.10 // 2016-03-18 ... 
+--------------------------------------------------------------------------
+
+* BUGFIX
+
+- tests, README generation as well as vignette generation would fail due to stats.grok.se serving no data after 2016-01-16
+- examples were restricted to data prior to that date to make tests and vignette/README generation run smoothly again
+
+
+* FEATURE
+
+- wp_trend() results came unordered, results are now ordered according to date, lang, title (making it easy to use something like plot( wp_trend("test", from="2015-01-01", to="2015-01-30")[,c("date", "count")], type="b")
+- cut loose unnecessary RCurl dependency 
+
+
+version 1.1.9 // 2016-02-29 ... 
+--------------------------------------------------------------------------
+
+* BUGFIX
+
+- wp_linked_pages() would sometimes return links that do not link to wikipedia pages but to other projects - that has been fixed. 
+
+
+version 1.1.8 // 2015-10-11 ... 
+--------------------------------------------------------------------------
+
+* FEATURE
+
+- if provided with bad server response data - could not be parsed - wp_trend() would without giving further information: now it reports whatever data was send back from the server along with the warning
+
+
 version 1.1.7 // 2015-09-22 ... 
 --------------------------------------------------------------------------
 

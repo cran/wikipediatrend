@@ -17,6 +17,8 @@ vignette: >
 ---
 
 ```{r general options, include=FALSE}
+  options("width"=88)
+  options("width.cutoff"=88)
   # default line color in ggplot graphics
     library(ggplot2)
     update_geom_defaults("line",   list(colour = "steelblue"))
@@ -25,13 +27,13 @@ vignette: >
   # there still we be some downloads of data so that building the vignette should imply 
   # that reproducing the vignette by user is possible
     library(wikipediatrend)
-    wp_cache_load(
-      system.file(
-        "extdata", 
-        "wikipediatrend_cache.csv", 
-        package = "wikipediatrend"
+    #if ( interactive() ){
+    #  wp_set_cache_file( "inst/extdata/wikipediatrend_cache.csv" )
+    #}else{
+      wp_cache_load(
+        system.file("extdata/wikipediatrend_cache.csv", package="wikipediatrend")
       )
-    )
+    #}
 ```
 
 
@@ -57,18 +59,18 @@ If you simply want to browse Wikipedia page view statistics without all that cod
 visit http://stats.grok.se/ and have a look around. 
 
 If non-big data is not an option, get the raw data in their entity at 
-http://dumps.wikimedia.org/other/pagecounts-raw/ . 
+https://dumps.wikimedia.org/other/pagecounts-raw/ . 
 
-If you think days are crude measures of time but seconds might do if need be and info about which article views led to the numbers is useless anyways - go to http://datahub.io/dataset/english-wikipedia-pageviews-by-second. 
+If you think days are crude measures of time but seconds might do if need be and info about which article views led to the numbers is useless anyways - go to https://datahub.io/dataset/english-wikipedia-pageviews-by-second. 
 
-To get further information on the data source (Who? When? How? How good?) there is a Wikipedia article for that: http://en.wikipedia.org/wiki/Wikipedia:Pageview_statistics and another one: http://en.wikipedia.org/wiki/Wikipedia:About_page_view_statistics .
+To get further information on the data source (Who? When? How? How good?) there is a Wikipedia article for that: https://en.wikipedia.org/wiki/Wikipedia:Pageview_statistics and another one: https://en.wikipedia.org/wiki/Wikipedia:About_page_view_statistics .
 
 
 
 # Installation
 
 
-**stable CRAN version** (http://cran.rstudio.com/web/packages/wikipediatrend/)
+**stable CRAN version** (https://cran.r-project.org/package=wikipediatrend)
 
 ```{r, message=F, eval=FALSE}
 install.packages("wikipediatrend")
@@ -84,7 +86,7 @@ devtools::install_github("petermeissner/wikipediatrend")
 
 **... and load it via:**
 
-```{r, message=F}
+```{r}
 library(wikipediatrend)
 ```
 
@@ -95,13 +97,21 @@ The workhorse of the package is the `wp_trend()` function that allows you to get
 view counts as neat data frames like this:
 
 ```{r, message=F}
-page_views <- wp_trend("main_page")
+page_views <- wp_trend("main_page", from = "2015-10-01", to = "2015-11-30")
     
 page_views
 ```
 
 ... that can easily be turned into a plot ... 
 
+```{r, message=F}
+plot(
+  page_views[, c("date","count")], 
+  type="b"
+)
+```
+
+... or like that ...
 
 ```{r, message=F}
 library(ggplot2)
@@ -120,13 +130,11 @@ ggplot(page_views, aes(x=date, y=count)) +
 `wp_trend()` has several options and most of them are set to defaults: 
 
 - `page`
-- `from = Sys.Date() - 30`
-- `to   = Sys.Date()`
+- `from = prev_month_start()`
+- `to   = prev_month_end()`
 - `lang = "en"`
 - `file = ""`
-- ~~`friendly`~~ *deprecated*
-- ~~`requestFrom`~~ *deprecated*
-- ~~`userAgent`~~ *deprecated*
+
 
 ## `page`
 
@@ -134,14 +142,16 @@ The `page` option allows to specify one or more article titles for which data sh
 
 These titles should be in the same format as shown in the address bar of your browser to ensure that the pages are found. 
 If we want to get page views for the United Nations Millennium Development Goals and 
-the article is found here:  *"http://en.wikipedia.org/wiki/Millennium_Development_Goals"* the page title to pass to `wp_trend()` should be *Millennium_Development_Goals* not *Millennium Development Goals* or *Millennium_development_goals* or amy other *'mostly-like-the-original'* variation. 
+the article is found here:  https://en.wikipedia.org/wiki/Millennium_Development_Goals the page title to pass to `wp_trend()` should be *Millennium_Development_Goals* not *Millennium Development Goals* or *Millennium_development_goals* or any other *'mostly-like-the-original'* variation. 
 
 To ease data gathering `wp_trend()` `page` accepts whole vectors of page  titles and will retrieve date for each one after another. 
 
 ```{r, message=F}
 page_views <- 
   wp_trend( 
-    page = c( "Millennium_Development_Goals", "Climate_Change") 
+    page = c( "Millennium_Development_Goals", "Climate_Change"), 
+    from = "2015-01-01",
+    to   = "2015-01-30"
   )
 ```
 
@@ -162,7 +172,7 @@ page_views <-
   wp_trend( 
     page = "Millennium_Development_Goals" ,
     from = "2000-01-01",
-    to   = prev_month_end()
+    to   = "2009-01-30"
   )
 ```
 
@@ -185,7 +195,8 @@ page_views <-
   wp_trend( 
     page = c("Objetivos_de_Desarrollo_del_Milenio", "Millennium_Development_Goals") ,
     lang = c("es", "en"),
-    from = Sys.Date()-100
+    from = "2015-01-01",
+    to   = "2015-04-30"
   )
 ```
 
@@ -208,8 +219,8 @@ to accumulate data from susequent calls to `wp_trend()`. To get the data stored
 back into R use `wp_load(file = "MyCache.csv")`.
 
 ```{r, message=FALSE}
-wp_trend("Cheese", file="cheeeeese.csv")
-wp_trend("K\u00e4se", lang="de", file="cheeeeese.csv")
+wp_trend("Cheese", file="cheeeeese.csv", from = "2015-01-01", to="2015-01-30")
+wp_trend("K\u00e4se", lang="de", file="cheeeeese.csv", from = "2015-01-01", to="2015-01-30")
 
 cheeeeeese <- wp_load( file="cheeeeese.csv" )
 cheeeeeese
@@ -233,14 +244,9 @@ You can see if `wp_trend()` had to download something if it reports one or more
 links to the stats.grok.se server, e.g. ... 
 
 ```{r}
-wp_trend("Cheese")
-wp_trend("Cheese")
+wp_trend("Cheese", from = "2015-01-01", to = "2015-01-30")
 ```
-... but ... 
 
-```{r}
-wp_trend("Cheese", from = Sys.Date()-60)
-```
 
 The current cache in memory can be accessed via:
 
@@ -266,7 +272,7 @@ The function will reload whatever is stored in the file and in subsequent calls 
 
 ## Caching across sessions 2
 
-If disk-caching should be enabled by default one can define a path as system/environment variable `WP_CACHE_FILE`. When loading the package it will look for this variable via `Sys.getenv("WP_CACHE_FILE")` and use the path for caching 
+If disk-caching should be enabled by default one can define a path as system/environment variable `WP_CACHE_FILE` -- e.g. put something like this into `~/Renviron`: `WP_CACHE_FILE=~/.wp_trend_cache.csv`. When loading the package it will look for this variable via `Sys.getenv("WP_CACHE_FILE")` and use the path for caching 
 as if ...
 
 ```{r, eval=FALSE}
@@ -275,7 +281,7 @@ wp_set_cache_file( Sys.getenv("WP_CACHE_FILE") )
 
 .. would have been typed in by the user. 
 
-
+If the package finds a value for `WP_CACHE_FILE` it will mention that when laoding the package.
 
 # Counts for other languages
 
@@ -284,7 +290,7 @@ If comparing languages is important one needs to specify the exact article title
 
 ```{r, message=F}
 titles <- wp_linked_pages("Islamic_State_of_Iraq_and_the_Levant", "en")
-titles <- titles[titles$lang %in% c("de", "es", "ar", "ru","zh-min-nan"),]
+titles <- titles[titles$lang %in% c("de", "es", "ar", "ru"),]
 titles 
 ```
 
@@ -295,7 +301,8 @@ page_views <-
   wp_trend(
     page = titles$page, 
     lang = titles$lang,
-    from = "2014-08-01"
+    from = "2015-06-01",
+    to   = "2015-11-30"
   )
 ```
 
@@ -313,7 +320,7 @@ ggplot(page_views, aes(x=date, y=count, group=lang, color=lang)) +
   ylab("standardized count\n(by lang: m=0, var=1)") +
   theme_bw() + 
   scale_colour_brewer(palette="Set1") + 
-  guides(colour = guide_legend(override.aes = list(alpha = 1)))
+  guides(colour = guide_legend(override.aes = list(alpha = 1))) 
 ```
 
 
@@ -336,7 +343,7 @@ RUN_IT <- require(AnomalyDetection) & require(BreakoutDetection) & F
 
 
 ```{r, eval=RUN_IT}
-# install.packages( "AnomalyDetection", repos="http://ghrr.github.io/drat",  type="source")
+# install.packages( "AnomalyDetection", repos="https://ghrr.github.io/drat",  type="source")
 library(AnomalyDetection)
 library(dplyr)
 library(ggplot2)
@@ -347,7 +354,7 @@ have to build a new data frame. It should contain only the date and count variab
 Furthermore, `date` should be named `timestamp` and transformed to type `POSIXct`.
 
 ```{r, eval=RUN_IT}
-page_views <- wp_trend("Syria", from = "2010-01-01")
+page_views <- wp_trend("Syria", from = "2014-01-01", to="2015-11-30")
 
 page_views_br <- 
   page_views  %>% 
@@ -443,7 +450,7 @@ on CRAN but has to be obtained from Github.
 
 
 ```{r, eval=RUN_IT}
-# install.packages(  "BreakoutDetection",   repos="http://ghrr.github.io/drat", type="source")
+# install.packages(  "BreakoutDetection",   repos="https://ghrr.github.io/drat", type="source")
 library(BreakoutDetection)
 library(dplyr)
 library(ggplot2)

@@ -7,11 +7,10 @@
 wp_save(res, file = wp_cache_file())
 }
 \arguments{
-\item{res}{data retreived by \code{wp_trend()}}
+\item{res}{data retrieved by \code{wp_trend()}}
 
 \item{file}{where to save/cache results (defaults to \code{wp_cache_file()})}
 }
 \description{
 Function writes wp_trend() data to a CSV file that serves as cache/storage
 }
-

@@ -7,9 +7,8 @@
 wp_add_to_cache(df)
 }
 \arguments{
-\item{df}{data frame to be aded to cache}
+\item{df}{data frame to be added to cache}
 }
 \description{
 function adding downloaded data to the cache
 }
-

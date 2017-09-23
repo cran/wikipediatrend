@@ -31,15 +31,9 @@
 #'   on disk 
 #'
 #' 
-#'
 #' @examples 
-#' library(wikipediatrend)
-#' wp_trend(  page        = c("Cheese", "K\u00e4se"),
-#'            from        = "2014-11-01", 
-#'            to          = "2014-11-30", 
-#'            lang        = c("en", "de"),
-#'            file        = wp_cache_file()
-#'          )
+#' 
+#' wp_trend()
 #'
 #' 
 #' @export
@@ -50,11 +44,14 @@ wp_trend <- function( page ,
                       lang        = "en", 
                       file        = "" 
 ){
-  # dev # 
-  # page="main"; from=prev_month_start(); to=prev_month_end(); lang="en"; file=""
-  # page="main"; from=prev_month_start(); to=prev_month_end(); lang="en"; file="test.csv"
-  # page="pegida"; from=prev_month_start(); to=Sys.Date(); lang="de"; file=""
-  # deprecation
+
+  message(
+    "
+The wikipediatrend package currently has no server providing any page view information. 
+Use package pageviews for recent (2016+) information. 
+Older information hopefully available again soon.
+    ")
+  return(NULL)
   
   # save current global save file
   old_cache_file <- wp_cache_file()

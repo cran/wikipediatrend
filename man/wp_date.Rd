@@ -2,13 +2,13 @@
 % Please edit documentation in R/wp_date_functions.r
 \name{wp_date}
 \alias{wp_date}
+\alias{wp_date.character}
+\alias{wp_date.default}
+\alias{wp_date.numeric}
+\alias{wp_date.dates}
+\alias{wp_date.factor}
 \alias{wp_date.POSIXct}
 \alias{wp_date.POSIXlt}
-\alias{wp_date.character}
-\alias{wp_date.dates}
-\alias{wp_date.default}
-\alias{wp_date.factor}
-\alias{wp_date.numeric}
 \title{Package specific 'as.Date()' function}
 \usage{
 wp_date(x, ...)
@@ -61,7 +61,7 @@ instead of killing itself with an error.
 \item \code{default}: same as \code{as.Date()}
 
 \item \code{numeric}: Difference to \code{as.Date.character()}: Whenever an 
-origin is needed but not supplied isntead of breaking, \code{wp_date()} 
+origin is needed but not supplied instead of breaking, \code{wp_date()} 
 will raise a warning and proceed by assuming "1970-01-01" to be the origin 
 instead of killing itself with an error.
 
